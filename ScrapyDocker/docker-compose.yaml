@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  scrapy:
+    build: ./scrapy
+    command: scrapy crawl quotes -o j.json
+    volumes:
+      - .:/code
+    networks:
+      - scrapyNet
+    depends_on:
+      - splash
+  splash:
+    image: scrapinghub/splash
+    volumes: 
+      - ./splash:/splash
+    ports:
+      - '8050:8050'
+    networks:
+      - scrapyNet
+networks:
+  scrapyNet:
+    name: scrapynet
+
+volumes:
+  .:
+  splash:
+

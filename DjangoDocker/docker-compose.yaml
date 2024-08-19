@@ -1,0 +1,35 @@
+version: "3.9"
+   
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - apiNetwork
+  web:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8006 --workers=4 dataApi.wsgi
+    volumes:
+      - ./src:/code
+    ports:
+      - "8006:8006"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+      - apiNetwork
+networks:
+  apiNetwork:
+    name: apiNetworks
+    
+volumes:
+  data:
+  src:
